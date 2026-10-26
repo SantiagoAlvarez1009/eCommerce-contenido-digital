@@ -1,0 +1,16 @@
+[Unit]
+Description=Gunicorn - ecommerce
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/opt/ecommerce/app
+EnvironmentFile=/etc/ecommerce/ecommerce.env
+Environment=DJANGO_SETTINGS_MODULE=config.settings.production
+RuntimeDirectory=gunicorn
+ExecStart=/opt/ecommerce/venv/bin/gunicorn -c deploy/gunicorn.conf.py config.wsgi:application
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,16 @@
+# Common dependencies for all environments
+Django==6.1.2
+asgiref==3.13.0
+sqlparse==0.6.0
+tzdata==2026.5
+pillow==13.0.0
+
+# Environment variable configuration
+django-environ==0.14.0
+
+# Database: Amazon RDS (PostgreSQL)
+psycopg[binary]==3.3.6
+
+# Storage: Amazon S3
+django-storages==1.14.6
+boto3==1.43.118

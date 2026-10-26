@@ -1,0 +1,2 @@
+# EC2 installation (production). For other environments see requirements/
+-r requirements/production.txt
