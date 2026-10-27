@@ -31,6 +31,13 @@ python manage.py check
 python manage.py createsuperuser
 python manage.py shell
 ```
+### Datos de prueba y utilidades
+```powershell
+python manage.py seed_demo                    # Usuarios admin/operador/cliente (@demo.test) y 3 productos
+python manage.py identify_copy rutarchivo    # Recupera usuario y orden desde el fingerprint de una copia descargada
+python manage.py test apps                    # Pruebas del flujo completo
+```
+
 ### Apps y BD
 ```powershell
 python manage.py startapp catalogo apps\catalogo # Crear una app dentro de apps/ ~ Cambiar dentro de apps.py el `name` a apps.catalogo ~ agregar al config como `apps.catalogo` a LOCAL_APPS en config/settings/base.py

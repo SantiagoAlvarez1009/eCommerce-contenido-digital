@@ -1,0 +1,7 @@
+<table>
+  <tr><th>Producto</th><th>Precio</th></tr>
+  {% for item in order.items.all %}
+  <tr><td>{{ item.product.name }}</td><td>${{ item.price }}</td></tr>
+  {% endfor %}
+  <tr><th>Total</th><th>${{ order.total }}</th></tr>
+</table>

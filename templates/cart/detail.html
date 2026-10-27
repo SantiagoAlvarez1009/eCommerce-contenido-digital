@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Carrito{% endblock %}
+{% block content %}
+<h1>Carrito</h1>
+{% if products %}
+<table>
+  <tr><th>Producto</th><th>Precio</th><th></th></tr>
+  {% for product in products %}
+  <tr>
+    <td><a href="{% url 'catalog:detail' product.pk %}">{{ product.name }}</a></td>
+    <td>${{ product.price }}</td>
+    <td><form method="post" action="{% url 'cart:remove' product.pk %}">{% csrf_token %}<button class="secondary" type="submit">Quitar</button></form></td>
+  </tr>
+  {% endfor %}
+  <tr><th>Total</th><th colspan="2">${{ cart.total }}</th></tr>
+</table>
+<p>
+  <form class="inline" method="post" action="{% url 'orders:checkout' %}">{% csrf_token %}<button type="submit">Crear orden de compra</button></form>
+  <form class="inline" method="post" action="{% url 'cart:clear' %}">{% csrf_token %}<button class="secondary" type="submit">Vaciar</button></form>
+</p>
+{% else %}
+<p class="muted">Tu carrito está vacío. <a href="{% url 'catalog:list' %}">Ver catálogo</a></p>
+{% endif %}
+{% endblock %}

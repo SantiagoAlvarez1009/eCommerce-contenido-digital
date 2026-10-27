@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Orden #{{ order.pk }}{% endblock %}
+{% block content %}
+<h1>Orden #{{ order.pk }}</h1>
+<p><span class="badge">{{ order.get_status_display }}</span> · {{ order.created_at|date:"d/m/Y H:i" }}</p>
+{% include 'orders/_items.html' %}
+<p>
+  {% if order.can_be_paid %}
+    <a class="btn" href="{% url 'payments:pay' order.pk %}">Pagar</a>
+    <form class="inline" method="post" action="{% url 'orders:cancel' order.pk %}">{% csrf_token %}<button class="danger" type="submit">Cancelar orden</button></form>
+  {% endif %}
+  {% if order.is_paid %}
+    <a class="btn" href="{% url 'downloads:library' %}">Ir a mis descargas</a>
+  {% endif %}
+</p>
+{% if order.payments.all %}
+<h2>Pagos</h2>
+<table>
+  <tr><th>Referencia</th><th>Monto</th><th>Estado</th><th>Comprobante</th></tr>
+  {% for payment in order.payments.all %}
+  <tr>
+    <td>{{ payment.transaction_reference }}</td><td>${{ payment.amount }}</td><td>{{ payment.get_status_display }}</td>
+    <td>{% for r in payment.receipts.all %}<a href="{% url 'payments:receipt_detail' r.pk %}">Ver comprobante</a>{% endfor %}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+{% endblock %}

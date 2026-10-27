@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Usuarios{% endblock %}
+{% block content %}
+<h1>Usuarios</h1>
+<table>
+  <tr><th>Correo</th><th>Nombre</th><th>Rol</th><th>Estado</th><th>Último acceso</th><th>Acciones</th></tr>
+  {% for u in users %}
+  <tr>
+    <td>{{ u.email }}</td><td>{{ u.name }}</td><td>{{ u.get_role_display }}</td>
+    <td><span class="badge">{{ u.get_status_display }}</span></td>
+    <td>{{ u.last_login|date:"d/m/Y H:i"|default:"-" }}</td>
+    <td>
+      <form class="inline" method="post" action="{% url 'users:manage_role' u.pk %}">{% csrf_token %}
+        <select name="role" style="width:auto">
+          {% for value, label in form.fields.role.choices %}<option value="{{ value }}" {% if value == u.role %}selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+        <button class="secondary" type="submit">Cambiar rol</button>
+      </form>
+      <form class="inline" method="post" action="{% url 'users:manage_toggle' u.pk %}">{% csrf_token %}
+        <button class="{% if u.is_active %}danger{% endif %}" type="submit">{% if u.is_active %}Desactivar{% else %}Activar{% endif %}</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

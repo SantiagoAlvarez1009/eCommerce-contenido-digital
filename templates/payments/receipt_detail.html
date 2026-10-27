@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block title %}Comprobante{% endblock %}
+{% block content %}
+<h1>Comprobante - Orden #{{ receipt.payment.order_id }}</h1>
+<pre class="receipt">{{ content }}</pre>
+<p><a class="btn" href="{% url 'payments:receipt_download' receipt.pk %}">Descargar</a> <a href="{% url 'payments:receipts' %}">Volver</a></p>
+{% endblock %}

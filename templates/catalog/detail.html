@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>{{ product.name }}</h1>
+  <p>{{ product.description }}</p>
+  <p class="price">${{ product.price }}</p>
+  <p class="muted">Archivo: {{ product.file_name }}</p>
+  {% if owned %}
+    <a class="btn" href="{% url 'downloads:download' product.pk %}">Descargar</a>
+  {% elif user.is_authenticated %}
+    <form method="post" action="{% url 'cart:add' product.pk %}">{% csrf_token %}
+      <button type="submit">Agregar al carrito</button>
+    </form>
+  {% else %}
+    <p><a href="{% url 'users:login' %}?next={{ request.path }}">Inicia sesión</a> para comprar.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Gestión de productos{% endblock %}
+{% block content %}
+<h1>Gestión de productos</h1>
+<p><a class="btn" href="{% url 'products:create' %}">Registrar producto</a></p>
+<table>
+  <tr><th>Nombre</th><th>Precio</th><th>Estado</th><th>Archivo</th><th>SHA-256</th><th></th></tr>
+  {% for p in products %}
+  <tr>
+    <td>{{ p.name }}</td><td>${{ p.price }}</td><td><span class="badge">{{ p.get_status_display }}</span></td>
+    <td>{{ p.file_name }}</td><td class="muted" title="{{ p.file_hash }}">{{ p.file_hash|slice:":12" }}…</td>
+    <td>
+      <a href="{% url 'products:edit' p.pk %}">Editar</a>
+      <form class="inline" method="post" action="{% url 'products:toggle' p.pk %}">{% csrf_token %}
+        <button class="secondary" type="submit">{% if p.is_available %}Desactivar{% else %}Activar{% endif %}</button>
+      </form>
+    </td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="6" class="muted">Sin productos.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

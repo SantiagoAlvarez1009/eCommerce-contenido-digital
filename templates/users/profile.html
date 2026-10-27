@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Mi perfil{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Mi perfil</h1>
+  <p class="muted">Rol: {{ user.get_role_display }} · Registrado: {{ user.created_at|date:"d/m/Y" }}</p>
+  <form method="post">{% csrf_token %}
+    {% include 'partials/form.html' %}
+    <button type="submit">Guardar</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Pedidos{% endblock %}
+{% block content %}
+<h1>Pedidos</h1>
+<p>
+  <a href="{% url 'orders:manage_list' %}">Todos</a>
+  {% for value, label in statuses %} · <a href="?status={{ value }}" {% if value == current %}style="font-weight:700"{% endif %}>{{ label }}</a>{% endfor %}
+</p>
+<table>
+  <tr><th>#</th><th>Cliente</th><th>Fecha</th><th>Total</th><th>Estado</th><th></th></tr>
+  {% for order in orders %}
+  <tr>
+    <td>{{ order.pk }}</td><td>{{ order.user.email }}</td><td>{{ order.created_at|date:"d/m/Y H:i" }}</td>
+    <td>${{ order.total }}</td><td><span class="badge">{{ order.get_status_display }}</span></td>
+    <td><a href="{% url 'orders:manage_detail' order.pk %}">Gestionar</a></td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="6" class="muted">Sin pedidos.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Catálogo{% endblock %}
+{% block content %}
+<h1>Catálogo</h1>
+<form method="get" class="card" style="display:flex;gap:.5rem">
+  <input type="search" name="q" value="{{ query }}" placeholder="Buscar productos...">
+  <button type="submit">Buscar</button>
+</form>
+<div class="grid">
+  {% for product in page %}
+  <div class="card">
+    <h3><a href="{% url 'catalog:detail' product.pk %}">{{ product.name }}</a></h3>
+    <p class="muted">{{ product.description|truncatechars:120 }}</p>
+    <p class="price">${{ product.price }}</p>
+    {% if user.is_authenticated %}
+    <form method="post" action="{% url 'cart:add' product.pk %}">{% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <button type="submit">Agregar al carrito</button>
+    </form>
+    {% endif %}
+  </div>
+  {% empty %}
+  <p class="muted">No hay productos disponibles.</p>
+  {% endfor %}
+</div>
+{% if page.has_other_pages %}
+<p>
+  {% if page.has_previous %}<a href="?q={{ query|urlencode }}&page={{ page.previous_page_number }}">&laquo; Anterior</a>{% endif %}
+  Página {{ page.number }} de {{ page.paginator.num_pages }}
+  {% if page.has_next %}<a href="?q={{ query|urlencode }}&page={{ page.next_page_number }}">Siguiente &raquo;</a>{% endif %}
+</p>
+{% endif %}
+{% endblock %}

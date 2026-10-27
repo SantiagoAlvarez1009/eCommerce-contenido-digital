@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Pagar orden #{{ order.pk }}{% endblock %}
+{% block content %}
+<h1>Pago simulado - Orden #{{ order.pk }}</h1>
+{% include 'orders/_items.html' %}
+<div class="card" style="margin-top:1rem">
+  <p class="muted">Este es un pago simulado. No se solicitan ni almacenan datos de tarjetas o cuentas.</p>
+  <form method="post">{% csrf_token %}
+    {{ form.result }}
+    {{ form.result.errors }}
+    <p><button type="submit">Confirmar pago de ${{ order.total }}</button></p>
+  </form>
+</div>
+{% endblock %}

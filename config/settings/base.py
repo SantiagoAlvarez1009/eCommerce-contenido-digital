@@ -35,7 +35,6 @@ DJANGO_APPS = [
     'apps.products',
     'apps.orders',
     'apps.payments',
-    'apps.tickets',
     'apps.cart',
     'apps.downloads',
 ]
@@ -72,6 +71,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.cart.context_processors.cart_count',
             ],
         },
     },
@@ -90,6 +90,15 @@ DATABASES = {
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Authentication
+
+AUTH_USER_MODEL = 'users.User'
+
+LOGIN_URL           = 'users:login'
+LOGIN_REDIRECT_URL  = 'catalog:list'
+LOGOUT_REDIRECT_URL = 'catalog:list'
 
 
 # Password validation

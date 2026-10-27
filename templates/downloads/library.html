@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Mis descargas{% endblock %}
+{% block content %}
+<h1>Mis productos adquiridos</h1>
+<table>
+  <tr><th>Producto</th><th>Archivo</th><th>Descargas</th><th></th></tr>
+  {% for product, count in items %}
+  <tr>
+    <td>{{ product.name }}</td><td>{{ product.file_name }}</td><td>{{ count }}</td>
+    <td><a class="btn" href="{% url 'downloads:download' product.pk %}">Descargar</a></td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="4" class="muted">Aún no has adquirido productos.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

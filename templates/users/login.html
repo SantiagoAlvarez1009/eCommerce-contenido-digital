@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Iniciar sesión{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Iniciar sesión</h1>
+  <form method="post">{% csrf_token %}
+    {% include 'partials/form.html' %}
+    <input type="hidden" name="next" value="{{ next }}">
+    <button type="submit">Entrar</button>
+  </form>
+  <p><a href="{% url 'users:password_reset' %}">Olvidé mi contraseña</a> · <a href="{% url 'users:register' %}">Crear cuenta</a></p>
+</div>
+{% endblock %}
