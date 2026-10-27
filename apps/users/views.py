@@ -34,7 +34,7 @@ def profile(request):
     return render(request, 'users/profile.html', {'form': form})
 
 
-# --- Administration (ADMINISTRADOR) ---
+# --- Administration (ADMIN role) ---
 
 @role_required(User.Role.ADMIN)
 def user_list(request):

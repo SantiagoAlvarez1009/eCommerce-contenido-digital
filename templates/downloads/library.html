@@ -1,16 +1,24 @@
 {% extends 'base.html' %}
 {% block title %}Mis descargas{% endblock %}
 {% block content %}
-<h1>Mis productos adquiridos</h1>
-<table>
-  <tr><th>Producto</th><th>Archivo</th><th>Descargas</th><th></th></tr>
+<p class="eyebrow mb-2">Biblioteca</p>
+<h1 class="display-5 mb-5">Mis descargas</h1>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-5">
   {% for product, count in items %}
-  <tr>
-    <td>{{ product.name }}</td><td>{{ product.file_name }}</td><td>{{ count }}</td>
-    <td><a class="btn" href="{% url 'downloads:download' product.pk %}">Descargar</a></td>
-  </tr>
+  <div class="col">
+    <article class="product-card">
+      {% include 'partials/product_visual.html' %}
+      <h2 class="product-title">{{ product.name }}</h2>
+      <p class="product-desc">{{ product.file_name }} · {{ count }} descarga{{ count|pluralize }}</p>
+      <a class="btn btn-dark btn-sm" href="{% url 'downloads:download' product.pk %}">Descargar</a>
+    </article>
+  </div>
   {% empty %}
-  <tr><td colspan="4" class="muted">Aún no has adquirido productos.</td></tr>
+  <div class="col-12 py-5 text-center">
+    <p class="fs-4 fw-light mb-4">Aún no has adquirido productos.</p>
+    <a class="btn btn-dark" href="{% url 'catalog:list' %}">Ver catálogo</a>
+  </div>
   {% endfor %}
-</table>
+</div>
 {% endblock %}

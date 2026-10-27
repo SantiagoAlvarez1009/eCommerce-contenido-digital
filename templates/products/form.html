@@ -1,12 +1,17 @@
 {% extends 'base.html' %}
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
-<div class="card">
-  <h1>{{ title }}</h1>
-  <form method="post" enctype="multipart/form-data">{% csrf_token %}
-    {% include 'partials/form.html' %}
-    <button type="submit">Guardar</button>
-    <a href="{% url 'products:list' %}">Cancelar</a>
-  </form>
+<div class="row justify-content-center my-4">
+  <div class="col-md-9 col-lg-6">
+    <p class="eyebrow mb-2">Operación</p>
+    <h1 class="display-6 mb-5">{{ title }}</h1>
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+      {% include 'partials/form.html' %}
+      <div class="d-flex align-items-center gap-4 mt-5">
+        <button type="submit" class="btn btn-dark">Guardar</button>
+        <a class="link-action muted" href="{% url 'products:list' %}">Cancelar</a>
+      </div>
+    </form>
+  </div>
 </div>
 {% endblock %}

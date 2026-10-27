@@ -1,7 +1,11 @@
-<table>
-  <tr><th>Producto</th><th>Precio</th></tr>
-  {% for item in order.items.all %}
-  <tr><td>{{ item.product.name }}</td><td>${{ item.price }}</td></tr>
-  {% endfor %}
-  <tr><th>Total</th><th>${{ order.total }}</th></tr>
+<table class="table align-middle">
+  <thead><tr><th>Producto</th><th class="text-end">Precio</th></tr></thead>
+  <tbody>
+    {% for item in order.items.all %}
+    <tr><td>{{ item.product.name }}</td><td class="text-end fw-light">${{ item.price }}</td></tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr><th>Total</th><th class="text-end fs-5 fw-light">${{ order.total }}</th></tr>
+  </tfoot>
 </table>

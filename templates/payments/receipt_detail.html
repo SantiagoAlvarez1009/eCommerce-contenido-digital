@@ -1,7 +1,15 @@
 {% extends 'base.html' %}
 {% block title %}Comprobante{% endblock %}
 {% block content %}
-<h1>Comprobante - Orden #{{ receipt.payment.order_id }}</h1>
-<pre class="receipt">{{ content }}</pre>
-<p><a class="btn" href="{% url 'payments:receipt_download' receipt.pk %}">Descargar</a> <a href="{% url 'payments:receipts' %}">Volver</a></p>
+<a class="link-action muted d-inline-block mb-5" href="{% url 'payments:receipts' %}">&larr; Comprobantes</a>
+
+<p class="eyebrow mb-2">Comprobante de compra</p>
+<h1 class="display-5 mb-5">Orden #{{ receipt.payment.order_id }}</h1>
+
+<div class="row">
+  <div class="col-lg-8">
+    <pre class="receipt">{{ content }}</pre>
+    <a class="btn btn-dark mt-4" href="{% url 'payments:receipt_download' receipt.pk %}">Descargar</a>
+  </div>
+</div>
 {% endblock %}

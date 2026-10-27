@@ -1,13 +1,20 @@
 {% extends 'base.html' %}
 {% block title %}Iniciar sesión{% endblock %}
 {% block content %}
-<div class="card">
-  <h1>Iniciar sesión</h1>
-  <form method="post">{% csrf_token %}
-    {% include 'partials/form.html' %}
-    <input type="hidden" name="next" value="{{ next }}">
-    <button type="submit">Entrar</button>
-  </form>
-  <p><a href="{% url 'users:password_reset' %}">Olvidé mi contraseña</a> · <a href="{% url 'users:register' %}">Crear cuenta</a></p>
+<div class="row justify-content-center my-5">
+  <div class="col-md-8 col-lg-5 col-xl-4">
+    <p class="eyebrow mb-2">Cuenta</p>
+    <h1 class="display-6 mb-5">Iniciar sesión</h1>
+    <form method="post">{% csrf_token %}
+      {% include 'partials/form.html' %}
+      <input type="hidden" name="next" value="{{ next }}">
+      <button type="submit" class="btn btn-dark w-100 mb-4">Entrar</button>
+    </form>
+    <p class="small text-center mb-0">
+      <a href="{% url 'users:password_reset' %}" class="muted">Olvidé mi contraseña</a>
+      <span class="muted mx-2">·</span>
+      <a href="{% url 'users:register' %}" class="muted">Crear cuenta</a>
+    </p>
+  </div>
 </div>
 {% endblock %}

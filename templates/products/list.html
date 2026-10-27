@@ -1,23 +1,40 @@
 {% extends 'base.html' %}
 {% block title %}Gestión de productos{% endblock %}
 {% block content %}
-<h1>Gestión de productos</h1>
-<p><a class="btn" href="{% url 'products:create' %}">Registrar producto</a></p>
-<table>
-  <tr><th>Nombre</th><th>Precio</th><th>Estado</th><th>Archivo</th><th>SHA-256</th><th></th></tr>
-  {% for p in products %}
-  <tr>
-    <td>{{ p.name }}</td><td>${{ p.price }}</td><td><span class="badge">{{ p.get_status_display }}</span></td>
-    <td>{{ p.file_name }}</td><td class="muted" title="{{ p.file_hash }}">{{ p.file_hash|slice:":12" }}…</td>
-    <td>
-      <a href="{% url 'products:edit' p.pk %}">Editar</a>
-      <form class="inline" method="post" action="{% url 'products:toggle' p.pk %}">{% csrf_token %}
-        <button class="secondary" type="submit">{% if p.is_available %}Desactivar{% else %}Activar{% endif %}</button>
-      </form>
-    </td>
-  </tr>
-  {% empty %}
-  <tr><td colspan="6" class="muted">Sin productos.</td></tr>
-  {% endfor %}
-</table>
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-5">
+  <div>
+    <p class="eyebrow mb-2">Operación</p>
+    <h1 class="display-5 mb-0">Productos</h1>
+  </div>
+  <a class="btn btn-dark" href="{% url 'products:create' %}">Registrar producto</a>
+</div>
+
+<div class="table-responsive">
+  <table class="table align-middle">
+    <thead><tr><th>Nombre</th><th>Precio</th><th>Estado</th><th>Archivo</th><th>SHA-256</th><th></th></tr></thead>
+    <tbody>
+      {% for p in products %}
+      <tr>
+        <td class="fw-medium">{{ p.name }}</td>
+        <td class="fw-light">${{ p.price }}</td>
+        <td><span class="status status-{{ p.status }}">{{ p.get_status_display }}</span></td>
+        <td class="muted">{{ p.file_name }}</td>
+        <td class="muted small" title="{{ p.file_hash }}">{{ p.file_hash|slice:":12" }}…</td>
+        <td class="text-end text-nowrap">
+          <a class="link-action" href="{% url 'products:edit' p.pk %}">Editar</a>
+          <form class="inline ms-4" method="post" action="{% url 'products:toggle' p.pk %}">{% csrf_token %}
+            {% if p.is_available %}
+            <button type="submit" class="link-action danger" data-confirm="¿Desactivar &quot;{{ p.name }}&quot;? Dejará de mostrarse en el catálogo.">Desactivar</button>
+            {% else %}
+            <button type="submit" class="link-action">Activar</button>
+            {% endif %}
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="muted py-5 text-center">Sin productos.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}

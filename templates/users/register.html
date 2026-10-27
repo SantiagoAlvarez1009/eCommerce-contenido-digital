@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 {% block title %}Registro{% endblock %}
 {% block content %}
-<div class="card">
-  <h1>Crear cuenta</h1>
-  <form method="post">{% csrf_token %}
-    {% include 'partials/form.html' %}
-    <button type="submit">Registrarme</button>
-  </form>
+<div class="row justify-content-center my-5">
+  <div class="col-md-8 col-lg-5 col-xl-4">
+    <p class="eyebrow mb-2">Cuenta</p>
+    <h1 class="display-6 mb-5">Crear cuenta</h1>
+    <form method="post">{% csrf_token %}
+      {% include 'partials/form.html' %}
+      <button type="submit" class="btn btn-dark w-100 mb-4">Registrarme</button>
+    </form>
+    <p class="small text-center mb-0"><a href="{% url 'users:login' %}" class="muted">Ya tengo cuenta</a></p>
+  </div>
 </div>
 {% endblock %}

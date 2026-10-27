@@ -33,14 +33,14 @@ python manage.py shell
 ```
 ### Datos de prueba y utilidades
 ```powershell
-python manage.py seed_demo                    # Usuarios admin/operador/cliente (@demo.test) y 3 productos
-python manage.py identify_copy rutarchivo    # Recupera usuario y orden desde el fingerprint de una copia descargada
-python manage.py test apps                    # Pruebas del flujo completo
+python manage.py seed_demo                    # Admin/operator/client users (@demo.test) and 3 products
+python manage.py identify_copy path/to/file # Recover user and order from the fingerprint of a downloaded copy
+python manage.py test apps                    # Full purchase flow tests
 ```
 
 ### Apps y BD
 ```powershell
-python manage.py startapp catalogo apps\catalogo # Crear una app dentro de apps/ ~ Cambiar dentro de apps.py el `name` a apps.catalogo ~ agregar al config como `apps.catalogo` a LOCAL_APPS en config/settings/base.py
+python manage.py startapp catalogo apps\catalogo # Create an app inside apps/ ~ In apps.py change `name` to apps.catalogo ~ add `apps.catalogo` to LOCAL_APPS in config/settings/base.py
 python manage.py makemigrations
 python manage.py migrate
 python manage.py showmigrations
@@ -50,9 +50,9 @@ python manage.py showmigrations
 ```powershell
 pip install -r requirements.txt
 export DJANGO_SETTINGS_MODULE=config.settings.production
-python manage.py check --deploy # Revision de seguridad
-python manage.py migrate # Migra BD en RDS
-python manage.py collectstatic --noinput # Estaticos al S3
-sudo systemctl restart gunicorn # Reiniciar la app
-sudo journalctl -u gunicorn -f # Para ver logs
+python manage.py check --deploy # Security check
+python manage.py migrate # Migrate the RDS database
+python manage.py collectstatic --noinput # Static files to S3
+sudo systemctl restart gunicorn # Restart the app
+sudo journalctl -u gunicorn -f # Follow the logs
 ```

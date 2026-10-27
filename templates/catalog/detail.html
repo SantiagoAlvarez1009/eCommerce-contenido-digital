@@ -1,19 +1,36 @@
 {% extends 'base.html' %}
 {% block title %}{{ product.name }}{% endblock %}
 {% block content %}
-<div class="card">
-  <h1>{{ product.name }}</h1>
-  <p>{{ product.description }}</p>
-  <p class="price">${{ product.price }}</p>
-  <p class="muted">Archivo: {{ product.file_name }}</p>
-  {% if owned %}
-    <a class="btn" href="{% url 'downloads:download' product.pk %}">Descargar</a>
-  {% elif user.is_authenticated %}
-    <form method="post" action="{% url 'cart:add' product.pk %}">{% csrf_token %}
-      <button type="submit">Agregar al carrito</button>
-    </form>
-  {% else %}
-    <p><a href="{% url 'users:login' %}?next={{ request.path }}">Inicia sesión</a> para comprar.</p>
-  {% endif %}
+<a class="link-action muted d-inline-block mb-5" href="{% url 'catalog:list' %}">&larr; Catálogo</a>
+
+<div class="row g-5">
+  <div class="col-lg-6">
+    {% include 'partials/product_visual.html' %}
+  </div>
+  <div class="col-lg-5 offset-lg-1">
+    <div class="detail-sticky">
+      <p class="eyebrow mb-2">Producto digital</p>
+      <h1 class="display-5 mb-3">{{ product.name }}</h1>
+      <p class="fs-4 fw-light mb-4">${{ product.price }}</p>
+      <p class="mb-5">{{ product.description }}</p>
+
+      {% if owned %}
+        <a class="btn btn-dark w-100 mb-3" href="{% url 'downloads:download' product.pk %}">Descargar</a>
+        <p class="small muted mb-0">Ya adquiriste este producto.</p>
+      {% elif user.is_authenticated %}
+        <form method="post" action="{% url 'cart:add' product.pk %}">{% csrf_token %}
+          <button type="submit" class="btn btn-dark w-100">Agregar al carrito</button>
+        </form>
+      {% else %}
+        <a class="btn btn-dark w-100" href="{% url 'users:login' %}?next={{ request.path }}">Inicia sesión para comprar</a>
+      {% endif %}
+
+      <hr class="my-5">
+      <dl class="row small mb-0">
+        <dt class="col-4 fw-normal muted">Archivo</dt><dd class="col-8">{{ product.file_name }}</dd>
+        <dt class="col-4 fw-normal muted">Entrega</dt><dd class="col-8">Descarga inmediata tras el pago</dd>
+      </dl>
+    </div>
+  </div>
 </div>
 {% endblock %}

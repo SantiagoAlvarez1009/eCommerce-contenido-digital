@@ -1,26 +1,41 @@
 {% extends 'base.html' %}
 {% block title %}Usuarios{% endblock %}
 {% block content %}
-<h1>Usuarios</h1>
-<table>
-  <tr><th>Correo</th><th>Nombre</th><th>Rol</th><th>Estado</th><th>Último acceso</th><th>Acciones</th></tr>
-  {% for u in users %}
-  <tr>
-    <td>{{ u.email }}</td><td>{{ u.name }}</td><td>{{ u.get_role_display }}</td>
-    <td><span class="badge">{{ u.get_status_display }}</span></td>
-    <td>{{ u.last_login|date:"d/m/Y H:i"|default:"-" }}</td>
-    <td>
-      <form class="inline" method="post" action="{% url 'users:manage_role' u.pk %}">{% csrf_token %}
-        <select name="role" style="width:auto">
-          {% for value, label in form.fields.role.choices %}<option value="{{ value }}" {% if value == u.role %}selected{% endif %}>{{ label }}</option>{% endfor %}
-        </select>
-        <button class="secondary" type="submit">Cambiar rol</button>
-      </form>
-      <form class="inline" method="post" action="{% url 'users:manage_toggle' u.pk %}">{% csrf_token %}
-        <button class="{% if u.is_active %}danger{% endif %}" type="submit">{% if u.is_active %}Desactivar{% else %}Activar{% endif %}</button>
-      </form>
-    </td>
-  </tr>
-  {% endfor %}
-</table>
+<p class="eyebrow mb-2">Administración</p>
+<h1 class="display-6 mb-5">Usuarios</h1>
+
+<div class="table-responsive">
+  <table class="table align-middle">
+    <thead>
+      <tr><th>Correo</th><th>Nombre</th><th>Rol</th><th>Estado</th><th>Último acceso</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.email }}</td>
+        <td>{{ u.name }}</td>
+        <td>
+          <form class="d-flex align-items-center gap-3" method="post" action="{% url 'users:manage_role' u.pk %}">{% csrf_token %}
+            <select name="role" class="form-line auto" aria-label="Rol de {{ u.email }}">
+              {% for value, label in form.fields.role.choices %}<option value="{{ value }}" {% if value == u.role %}selected{% endif %}>{{ label }}</option>{% endfor %}
+            </select>
+            <button type="submit" class="link-action">Guardar</button>
+          </form>
+        </td>
+        <td><span class="status status-{{ u.status }}">{{ u.get_status_display }}</span></td>
+        <td class="muted">{{ u.last_login|date:"d/m/Y H:i"|default:"—" }}</td>
+        <td class="text-end">
+          <form class="inline" method="post" action="{% url 'users:manage_toggle' u.pk %}">{% csrf_token %}
+            {% if u.is_active %}
+            <button type="submit" class="link-action danger" data-confirm="¿Desactivar la cuenta de {{ u.email }}?">Desactivar</button>
+            {% else %}
+            <button type="submit" class="link-action">Activar</button>
+            {% endif %}
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}

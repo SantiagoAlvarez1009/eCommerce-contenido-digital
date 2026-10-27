@@ -1,28 +1,55 @@
 {% extends 'base.html' %}
 {% block title %}Orden #{{ order.pk }}{% endblock %}
 {% block content %}
-<h1>Orden #{{ order.pk }}</h1>
-<p><span class="badge">{{ order.get_status_display }}</span> · {{ order.created_at|date:"d/m/Y H:i" }}</p>
-{% include 'orders/_items.html' %}
-<p>
-  {% if order.can_be_paid %}
-    <a class="btn" href="{% url 'payments:pay' order.pk %}">Pagar</a>
-    <form class="inline" method="post" action="{% url 'orders:cancel' order.pk %}">{% csrf_token %}<button class="danger" type="submit">Cancelar orden</button></form>
-  {% endif %}
-  {% if order.is_paid %}
-    <a class="btn" href="{% url 'downloads:library' %}">Ir a mis descargas</a>
-  {% endif %}
-</p>
-{% if order.payments.all %}
-<h2>Pagos</h2>
-<table>
-  <tr><th>Referencia</th><th>Monto</th><th>Estado</th><th>Comprobante</th></tr>
-  {% for payment in order.payments.all %}
-  <tr>
-    <td>{{ payment.transaction_reference }}</td><td>${{ payment.amount }}</td><td>{{ payment.get_status_display }}</td>
-    <td>{% for r in payment.receipts.all %}<a href="{% url 'payments:receipt_detail' r.pk %}">Ver comprobante</a>{% endfor %}</td>
-  </tr>
-  {% endfor %}
-</table>
-{% endif %}
+<a class="link-action muted d-inline-block mb-5" href="{% url 'orders:list' %}">&larr; Mis órdenes</a>
+
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-5">
+  <div>
+    <p class="eyebrow mb-2">{{ order.created_at|date:"d/m/Y H:i" }}</p>
+    <h1 class="display-5 mb-0">Orden #{{ order.pk }}</h1>
+  </div>
+  <span class="status status-{{ order.status }}">{{ order.get_status_display }}</span>
+</div>
+
+<div class="row g-5">
+  <div class="col-lg-8">
+    {% include 'orders/_items.html' %}
+
+    {% if order.payments.all %}
+    <p class="eyebrow mt-5 mb-3">Pagos</p>
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead><tr><th>Referencia</th><th>Monto</th><th>Estado</th><th></th></tr></thead>
+        <tbody>
+          {% for payment in order.payments.all %}
+          <tr>
+            <td>{{ payment.transaction_reference }}</td>
+            <td class="fw-light">${{ payment.amount }}</td>
+            <td><span class="status status-{{ payment.status }}">{{ payment.get_status_display }}</span></td>
+            <td class="text-end">{% for r in payment.receipts.all %}<a class="link-action" href="{% url 'payments:receipt_detail' r.pk %}">Comprobante</a>{% endfor %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="col-lg-4">
+    {% if order.can_be_paid %}
+    <div class="summary">
+      <p class="eyebrow mb-4">Pendiente de pago</p>
+      <a class="btn btn-dark w-100 mb-4" href="{% url 'payments:pay' order.pk %}">Pagar ${{ order.total }}</a>
+      <form method="post" action="{% url 'orders:cancel' order.pk %}" class="text-center">{% csrf_token %}
+        <button type="submit" class="link-action danger" data-confirm="¿Cancelar la orden #{{ order.pk }}?">Cancelar orden</button>
+      </form>
+    </div>
+    {% elif order.is_paid %}
+    <div class="summary">
+      <p class="eyebrow mb-4">Orden pagada</p>
+      <a class="btn btn-dark w-100" href="{% url 'downloads:library' %}">Ir a mis descargas</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}

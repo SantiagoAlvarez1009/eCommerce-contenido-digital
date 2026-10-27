@@ -82,7 +82,7 @@ ASGI_APPLICATION = 'config.asgi.application'
 
 
 # Database
-# DATABASE_URL=postgres://USER:KEY@endpoint-rds:5432/nombre
+# DATABASE_URL=postgres://USER:KEY@endpoint-rds:5432/name
 # No DATABASE_URL local development only Sqlite
 
 DATABASES = {

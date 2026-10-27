@@ -49,7 +49,7 @@ def order_cancel(request, pk):
     return redirect('orders:detail', pk=order.pk)
 
 
-# --- Order processing (OPERADOR) ---
+# --- Order processing (OPERATOR role) ---
 
 @role_required(User.Role.OPERATOR, User.Role.ADMIN)
 def manage_list(request):

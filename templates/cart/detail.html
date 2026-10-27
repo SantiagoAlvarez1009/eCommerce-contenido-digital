@@ -1,24 +1,50 @@
 {% extends 'base.html' %}
 {% block title %}Carrito{% endblock %}
 {% block content %}
-<h1>Carrito</h1>
+<p class="eyebrow mb-2">Tu selección</p>
+<h1 class="display-5 mb-5">Carrito</h1>
+
 {% if products %}
-<table>
-  <tr><th>Producto</th><th>Precio</th><th></th></tr>
-  {% for product in products %}
-  <tr>
-    <td><a href="{% url 'catalog:detail' product.pk %}">{{ product.name }}</a></td>
-    <td>${{ product.price }}</td>
-    <td><form method="post" action="{% url 'cart:remove' product.pk %}">{% csrf_token %}<button class="secondary" type="submit">Quitar</button></form></td>
-  </tr>
-  {% endfor %}
-  <tr><th>Total</th><th colspan="2">${{ cart.total }}</th></tr>
-</table>
-<p>
-  <form class="inline" method="post" action="{% url 'orders:checkout' %}">{% csrf_token %}<button type="submit">Crear orden de compra</button></form>
-  <form class="inline" method="post" action="{% url 'cart:clear' %}">{% csrf_token %}<button class="secondary" type="submit">Vaciar</button></form>
-</p>
+<div class="row g-5">
+  <div class="col-lg-8">
+    <table class="table align-middle">
+      <thead><tr><th>Producto</th><th class="text-end">Precio</th><th></th></tr></thead>
+      <tbody>
+        {% for product in products %}
+        <tr>
+          <td><a class="text-decoration-none fw-medium" href="{% url 'catalog:detail' product.pk %}">{{ product.name }}</a></td>
+          <td class="text-end fw-light">${{ product.price }}</td>
+          <td class="text-end">
+            <form class="inline" method="post" action="{% url 'cart:remove' product.pk %}">{% csrf_token %}
+              <button type="submit" class="link-action">Quitar</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <form class="mt-4" method="post" action="{% url 'cart:clear' %}">{% csrf_token %}
+      <button type="submit" class="link-action muted" data-confirm="¿Vaciar todo el carrito?">Vaciar carrito</button>
+    </form>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="summary">
+      <p class="eyebrow mb-4">Resumen</p>
+      <div class="d-flex justify-content-between align-items-baseline mb-4">
+        <span>Total</span>
+        <span class="fs-3 fw-light">${{ cart.total }}</span>
+      </div>
+      <form method="post" action="{% url 'orders:checkout' %}">{% csrf_token %}
+        <button type="submit" class="btn btn-dark w-100">Crear orden de compra</button>
+      </form>
+    </div>
+  </div>
+</div>
 {% else %}
-<p class="muted">Tu carrito está vacío. <a href="{% url 'catalog:list' %}">Ver catálogo</a></p>
+<div class="py-5 text-center">
+  <p class="fs-4 fw-light mb-4">Tu carrito está vacío.</p>
+  <a class="btn btn-dark" href="{% url 'catalog:list' %}">Ver catálogo</a>
+</div>
 {% endif %}
 {% endblock %}

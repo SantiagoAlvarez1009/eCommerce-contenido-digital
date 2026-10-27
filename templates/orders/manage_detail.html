@@ -1,20 +1,40 @@
 {% extends 'base.html' %}
 {% block title %}Pedido #{{ order.pk }}{% endblock %}
 {% block content %}
-<h1>Pedido #{{ order.pk }}</h1>
-<p>Cliente: {{ order.user.email }} · {{ order.created_at|date:"d/m/Y H:i" }}</p>
-{% include 'orders/_items.html' %}
-<h2>Pagos</h2>
-<table>
-  <tr><th>Referencia</th><th>Monto</th><th>Estado</th></tr>
-  {% for p in order.payments.all %}<tr><td>{{ p.transaction_reference }}</td><td>${{ p.amount }}</td><td>{{ p.get_status_display }}</td></tr>
-  {% empty %}<tr><td colspan="3" class="muted">Sin pagos.</td></tr>{% endfor %}
-</table>
-<div class="card" style="margin-top:1rem">
-  <form method="post">{% csrf_token %}
-    {% include 'partials/form.html' %}
-    <button type="submit">Actualizar estado</button>
-    <a href="{% url 'orders:manage_list' %}">Volver</a>
-  </form>
+<a class="link-action muted d-inline-block mb-5" href="{% url 'orders:manage_list' %}">&larr; Pedidos</a>
+
+<p class="eyebrow mb-2">{{ order.user.email }} · {{ order.created_at|date:"d/m/Y H:i" }}</p>
+<h1 class="display-5 mb-5">Pedido #{{ order.pk }}</h1>
+
+<div class="row g-5">
+  <div class="col-lg-8">
+    {% include 'orders/_items.html' %}
+
+    <p class="eyebrow mt-5 mb-3">Pagos</p>
+    <table class="table align-middle">
+      <thead><tr><th>Referencia</th><th>Monto</th><th>Estado</th></tr></thead>
+      <tbody>
+        {% for p in order.payments.all %}
+        <tr>
+          <td>{{ p.transaction_reference }}</td>
+          <td class="fw-light">${{ p.amount }}</td>
+          <td><span class="status status-{{ p.status }}">{{ p.get_status_display }}</span></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3" class="muted">Sin pagos.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="summary">
+      <p class="eyebrow mb-4">Estado del pedido</p>
+      <form method="post">{% csrf_token %}
+        {% include 'partials/form.html' %}
+        <button type="submit" class="btn btn-dark w-100">Actualizar estado</button>
+      </form>
+    </div>
+  </div>
 </div>
 {% endblock %}

@@ -1,16 +1,27 @@
 {% extends 'base.html' %}
 {% block title %}Comprobantes{% endblock %}
 {% block content %}
-<h1>Mis comprobantes</h1>
-<table>
-  <tr><th>Orden</th><th>Referencia</th><th>Fecha</th><th></th></tr>
-  {% for r in receipts %}
-  <tr>
-    <td>#{{ r.payment.order_id }}</td><td>{{ r.payment.transaction_reference }}</td><td>{{ r.created_at|date:"d/m/Y H:i" }}</td>
-    <td><a href="{% url 'payments:receipt_detail' r.pk %}">Ver</a> · <a href="{% url 'payments:receipt_download' r.pk %}">Descargar</a></td>
-  </tr>
-  {% empty %}
-  <tr><td colspan="4" class="muted">Aún no tienes comprobantes.</td></tr>
-  {% endfor %}
-</table>
+<p class="eyebrow mb-2">Historial</p>
+<h1 class="display-5 mb-5">Mis comprobantes</h1>
+
+<div class="table-responsive">
+  <table class="table align-middle">
+    <thead><tr><th>Orden</th><th>Referencia</th><th>Fecha</th><th></th></tr></thead>
+    <tbody>
+      {% for r in receipts %}
+      <tr>
+        <td class="fw-medium">#{{ r.payment.order_id }}</td>
+        <td>{{ r.payment.transaction_reference }}</td>
+        <td class="muted">{{ r.created_at|date:"d/m/Y H:i" }}</td>
+        <td class="text-end">
+          <a class="link-action" href="{% url 'payments:receipt_detail' r.pk %}">Ver</a>
+          <a class="link-action ms-4" href="{% url 'payments:receipt_download' r.pk %}">Descargar</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="muted py-5 text-center">Aún no tienes comprobantes.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}

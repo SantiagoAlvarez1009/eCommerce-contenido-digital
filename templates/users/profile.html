@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 {% block title %}Mi perfil{% endblock %}
 {% block content %}
-<div class="card">
-  <h1>Mi perfil</h1>
-  <p class="muted">Rol: {{ user.get_role_display }} · Registrado: {{ user.created_at|date:"d/m/Y" }}</p>
-  <form method="post">{% csrf_token %}
-    {% include 'partials/form.html' %}
-    <button type="submit">Guardar</button>
-  </form>
+<div class="row justify-content-center my-5">
+  <div class="col-md-8 col-lg-5 col-xl-4">
+    <p class="eyebrow mb-2">{{ user.get_role_display }} · desde {{ user.created_at|date:"d/m/Y" }}</p>
+    <h1 class="display-6 mb-5">Mi perfil</h1>
+    <form method="post">{% csrf_token %}
+      {% include 'partials/form.html' %}
+      <button type="submit" class="btn btn-dark">Guardar cambios</button>
+    </form>
+  </div>
 </div>
 {% endblock %}

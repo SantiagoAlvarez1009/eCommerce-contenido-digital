@@ -1,17 +1,25 @@
 {% extends 'base.html' %}
 {% block title %}Mis órdenes{% endblock %}
 {% block content %}
-<h1>Mis órdenes</h1>
-<table>
-  <tr><th>#</th><th>Fecha</th><th>Total</th><th>Estado</th><th></th></tr>
-  {% for order in orders %}
-  <tr>
-    <td>{{ order.pk }}</td><td>{{ order.created_at|date:"d/m/Y H:i" }}</td><td>${{ order.total }}</td>
-    <td><span class="badge">{{ order.get_status_display }}</span></td>
-    <td><a href="{% url 'orders:detail' order.pk %}">Ver</a></td>
-  </tr>
-  {% empty %}
-  <tr><td colspan="5" class="muted">Aún no tienes órdenes.</td></tr>
-  {% endfor %}
-</table>
+<p class="eyebrow mb-2">Historial</p>
+<h1 class="display-5 mb-5">Mis órdenes</h1>
+
+<div class="table-responsive">
+  <table class="table align-middle">
+    <thead><tr><th>Orden</th><th>Fecha</th><th>Total</th><th>Estado</th><th></th></tr></thead>
+    <tbody>
+      {% for order in orders %}
+      <tr>
+        <td class="fw-medium">#{{ order.pk }}</td>
+        <td class="muted">{{ order.created_at|date:"d/m/Y H:i" }}</td>
+        <td class="fw-light">${{ order.total }}</td>
+        <td><span class="status status-{{ order.status }}">{{ order.get_status_display }}</span></td>
+        <td class="text-end"><a class="link-action" href="{% url 'orders:detail' order.pk %}">Ver</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="muted py-5 text-center">Aún no tienes órdenes.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}
