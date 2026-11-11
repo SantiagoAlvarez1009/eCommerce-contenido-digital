@@ -1,32 +1,38 @@
-"""
-Insertion and recovery of the fingerprint inside the distributed content.
-
-PLACEHOLDER technique: the identifier is appended as a marker at the end of the
-file bytes. It travels inside the content (not in the file name) and can be
-recovered with `extract`, but it is trivially removable. Replace `embed` and
-`extract` with the final technique per file type; the rest of the system only
-depends on these two functions.
-"""
-
-MARKER_PREFIX = b'\n%%FINGERPRINT:'
-MARKER_SUFFIX = b'%%\n'
-
+from io import BytesIO
+from PIL import Image
+from stegano import lsb
+import json
 
 def embed(data, fingerprint):
-    """Return a copy of `data` carrying the fingerprint."""
-    return data + MARKER_PREFIX + fingerprint.encode('ascii') + MARKER_SUFFIX
+    """
+    Recibe los bytrs de la imagen originales yel identificador
+    Retorna los bytes de la nueva imagen con el identificador oculto esteganograficamente
+    """
+    try:
+        image = Image.open(BytesIO(data))
 
+        secret_image = lsb.hide(image, fingerprint)
+
+        output = BytesIO()
+
+        secret_image.save(output, format="PNG")
+
+        return output.getvalue()
+    except Exception as e:
+        print(f"Error al aplicar esteganografia: {e}")
+        return data
 
 def extract(data):
-    """Return the fingerprint carried by `data`, or None if there is none."""
-    start = data.rfind(MARKER_PREFIX)
-    if start == -1:
-        return None
-    start += len(MARKER_PREFIX)
-    end = data.find(MARKER_SUFFIX, start)
-    if end == -1:
-        return None
+    """
+    Recibe los bytes de un archivo sospechoso
+    y retorna el fingeeprint extraido, o Nonesi no se encontro nada
+    """
     try:
-        return data[start:end].decode('ascii')
-    except UnicodeDecodeError:
+        image = Image.open(BytesIO(data))
+        fingerprint = lsb.reveal(image)
+
+        if fingerprint:
+            return fingerprint
         return None
+    except Exception:
+        return None 
