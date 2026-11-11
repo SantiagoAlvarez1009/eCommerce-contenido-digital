@@ -9,7 +9,18 @@
 <div class="row">
   <div class="col-lg-8">
     <pre class="receipt">{{ content }}</pre>
-    <a class="btn btn-dark mt-4" href="{% url 'payments:receipt_download' receipt.pk %}">Descargar</a>
+
+    <p class="eyebrow mt-5 mb-2">Firma digital</p>
+    {% if receipt.signature %}
+      <pre class="receipt text-break" style="white-space: pre-wrap;">{{ receipt.signature }}</pre>
+    {% else %}
+      <p class="muted">Este comprobante no tiene firma digital.</p>
+    {% endif %}
+
+    <a class="btn btn-dark mt-4" href="{% url 'payments:receipt_download' receipt.pk %}">Descargar comprobante</a>
+    {% if receipt.signature %}
+      <a class="btn btn-outline-dark mt-4 ms-2" href="{% url 'payments:receipt_signature' receipt.pk %}">Descargar firma</a>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

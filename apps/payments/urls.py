@@ -9,4 +9,5 @@ urlpatterns = [
     path('comprobantes/'                   , views.receipt_list     , name='receipts'),
     path('comprobantes/<int:pk>/'          , views.receipt_detail   , name='receipt_detail'),
     path('comprobantes/<int:pk>/descargar/', views.receipt_download , name='receipt_download'),
+    path('comprobantes/<int:pk>/firma/'    , views.receipt_signature, name='receipt_signature'),
 ]

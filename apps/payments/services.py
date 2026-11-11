@@ -3,8 +3,9 @@ import uuid
 from django.core.files.base import ContentFile
 from django.db              import transaction
 
-from apps.orders.models import Order
-from .models            import Payment, PaymentReceipt
+from apps.orders.models     import Order
+from apps.services.crypto   import signing
+from .models                import Payment, PaymentReceipt
 
 
 class PaymentNotAllowedError(Exception):
@@ -36,7 +37,7 @@ def build_receipt_text(payment):
 
 def create_receipt(payment):
     content = build_receipt_text(payment).encode('utf-8')
-    receipt = PaymentReceipt(payment=payment)
+    receipt = PaymentReceipt(payment=payment, signature=signing.sign(content))
     receipt.receipt_file.save(
         f'comprobante_orden_{payment.order_id}_{payment.pk}.txt',
         ContentFile(content),

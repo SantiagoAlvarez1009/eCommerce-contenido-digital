@@ -1,6 +1,6 @@
 from django.contrib                 import messages
 from django.contrib.auth.decorators import login_required
-from django.http                    import FileResponse
+from django.http                    import FileResponse, HttpResponse
 from django.shortcuts               import get_object_or_404, redirect, render
 
 from apps.orders.models import Order
@@ -62,3 +62,11 @@ def receipt_download(request, pk):
         filename      = f'comprobante_{receipt.pk}.txt',
         content_type  = 'text/plain; charset=utf-8'
     )
+
+
+@login_required
+def receipt_signature(request, pk):
+    receipt = get_object_or_404(PaymentReceipt, pk=pk, payment__order__user=request.user)
+    response = HttpResponse(receipt.signature, content_type='text/plain; charset=utf-8')
+    response['Content-Disposition'] = f'attachment; filename="comprobante_{receipt.pk}.sig"'
+    return response
