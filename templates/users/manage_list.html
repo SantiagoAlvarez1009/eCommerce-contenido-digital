@@ -32,6 +32,11 @@
             <button type="submit" class="link-action">Activar</button>
             {% endif %}
           </form>
+          <!-- Boton para revocar sesiones -->
+          <form class="inline ms-3" method="post" action="{% url 'users:manage_revoke' u.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="link-action danger" data-confirm="¿Forzar el cierre de sesión de {{ u.email }}?">Revocar sesiones</button>
+          </form>
         </td>
       </tr>
       {% endfor %}

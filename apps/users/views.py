@@ -8,7 +8,8 @@ from apps.cart.models                 import Cart
 from apps.services.permissions.roles  import role_required
 from .forms  import ProfileForm, RegisterForm, RoleForm
 from .models import User
-
+from django.contrib.sessions.models import Session
+from django.utils import timezone
 
 def register(request):
     if request.user.is_authenticated:
@@ -70,4 +71,29 @@ def user_change_role(request, pk):
         messages.success(request, f'Rol de {user.email} actualizado a {user.get_role_display()}.')
     else:
         messages.error(request, 'Rol invalido.')
+    return redirect('users:manage_list')
+
+
+@role_required(User.Role.ADMIN)
+@require_POST
+def user_revoke_session(request, pk):
+    """Cierra todas las sesiones activas de un usuario especifico"""
+    user = get_object_or_404(User, pk=pk)
+
+    if user == request.user:
+        messages.error(request, 'No puedes revocar tu propia sesion actual desde aqui')
+    else:
+        #Busca las sesiones vigentes en la base de datos
+        sesiones_activas = Session.objects.filter(expire_date__gte=timezone.now())
+        sesiones_borradas = 0
+        
+        for sesion in sesiones_activas:
+            data_decodificada = sesion.get_decoded()
+            # Si el ID de la sesión coincide con el ID del usuario, la borramos
+            if str(user.pk) == str(data_decodificada.get('_auth_user_id')):
+                sesion.delete()
+                sesiones_borradas += 1
+                
+        messages.success(request, f'Se cerraron {sesiones_borradas} sesión(es) de {user.email}.')
+        
     return redirect('users:manage_list')
