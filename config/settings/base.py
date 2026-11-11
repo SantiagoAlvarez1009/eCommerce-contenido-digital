@@ -141,3 +141,10 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+
+SIGNING_PRIVATE_KEY_PATH = env('SIGNING_PRIVATE_KEY_PATH', default=str(BASE_DIR / 'keys' / 'signing_key.pem'))
+SIGNING_PUBLIC_KEY_PATH  = env('SIGNING_PUBLIC_KEY_PATH',  default=str(BASE_DIR / 'claves_publicas' / 'signing_key.pub.pem'))
+
+
+TEST_RUNNER = 'apps.services.crypto.test_runner.SigningKeysTestRunner'

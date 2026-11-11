@@ -15,3 +15,8 @@ media/
 .vscode/
 .idea/
 .DS_Store
+
+keys/
+*.key
+*_key.pem
+!claves_publicas/*.pub.pem

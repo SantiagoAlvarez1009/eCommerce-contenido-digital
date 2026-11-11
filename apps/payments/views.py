@@ -1,10 +1,12 @@
 from django.contrib                 import messages
 from django.contrib.auth.decorators import login_required
-from django.http                    import FileResponse
+from django.conf                    import settings
+from django.http                    import FileResponse, Http404, HttpResponse
 from django.shortcuts               import get_object_or_404, redirect, render
 
 from apps.orders.models import Order
-from .forms    import SimulatedPaymentForm
+from apps.services.crypto import signing
+from .forms    import ReceiptVerificationForm, SimulatedPaymentForm
 from .models   import PaymentReceipt
 from .services import PaymentNotAllowedError, process_simulated_payment
 
@@ -61,4 +63,35 @@ def receipt_download(request, pk):
         as_attachment = True,
         filename      = f'comprobante_{receipt.pk}.txt',
         content_type  = 'text/plain; charset=utf-8'
+    )
+
+
+@login_required
+def receipt_signature(request, pk):
+    receipt = get_object_or_404(PaymentReceipt, pk=pk, payment__order__user=request.user)
+    response = HttpResponse(receipt.signature, content_type='text/plain; charset=utf-8')
+    response['Content-Disposition'] = f'attachment; filename="comprobante_{receipt.pk}.sig"'
+    return response
+
+
+@login_required
+def receipt_verify(request):
+    form   = ReceiptVerificationForm(request.POST or None, request.FILES or None)
+    result = None
+    if request.method == 'POST' and form.is_valid():
+        content = form.cleaned_data['receipt_file'].read()
+        result  = signing.verify(content, form.cleaned_data['signature'])
+    return render(request, 'payments/verify.html', {'form': form, 'result': result})
+
+
+def public_key(request):
+    try:
+        key_file = open(settings.SIGNING_PUBLIC_KEY_PATH, 'rb')
+    except OSError:
+        raise Http404('Clave publica no disponible.')
+    return FileResponse(
+        key_file,
+        as_attachment = True,
+        filename      = 'clave_publica_comprobantes.pem',
+        content_type  = 'application/x-pem-file'
     )

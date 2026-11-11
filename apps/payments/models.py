@@ -47,6 +47,10 @@ class PaymentReceipt(models.Model):
     receipt_file = models.FileField(
         upload_to = 'payment_receipts/'
     )
+    signature = models.TextField(
+        blank   = True,
+        default = ''
+    )
     created_at = models.DateTimeField(
         auto_now_add=True
     )
@@ -56,6 +60,10 @@ class PaymentReceipt(models.Model):
 
     def __str__(self):
         return f'Receipt #{self.pk} - payment {self.payment_id}'
+    
+    def read_bytes(self):
+        with self.receipt_file.open('rb') as f:
+            return f.read()
 
     def read_text(self):
         with self.receipt_file.open('rb') as f:

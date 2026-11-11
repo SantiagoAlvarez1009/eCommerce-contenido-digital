@@ -2,7 +2,8 @@
 {% block title %}Comprobantes{% endblock %}
 {% block content %}
 <p class="eyebrow mb-2">Historial</p>
-<h1 class="display-5 mb-5">Mis comprobantes</h1>
+<h1 class="display-5 mb-3">Mis comprobantes</h1>
+<p class="mb-5"><a class="link-action" href="{% url 'payments:receipt_verify' %}">Verificar un comprobante</a></p>
 
 <div class="table-responsive">
   <table class="table align-middle">

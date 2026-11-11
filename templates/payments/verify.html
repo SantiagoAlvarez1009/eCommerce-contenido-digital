@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Verificar comprobante{% endblock %}
+{% block content %}
+<a class="link-action muted d-inline-block mb-5" href="{% url 'payments:receipts' %}">&larr; Comprobantes</a>
+
+<p class="eyebrow mb-2">Firma digital</p>
+<h1 class="display-5 mb-5">Verificar comprobante</h1>
+
+<div class="row g-5">
+  <div class="col-lg-7">
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+      {% include 'partials/form.html' %}
+      <button type="submit" class="btn btn-dark mt-4">Verificar</button>
+    </form>
+  </div>
+  <div class="col-lg-5">
+    {% if result is not None %}
+      <div class="summary">
+        {% if result %}
+          <p class="eyebrow mb-2">Resultado</p>
+          <p class="fs-4 mb-2">Firma válida</p>
+          <p class="small muted mb-0">El comprobante no fue modificado y fue emitido por esta plataforma.</p>
+        {% else %}
+          <p class="eyebrow mb-2">Resultado</p>
+          <p class="fs-4 mb-2">Firma inválida</p>
+          <p class="small muted mb-0">El comprobante fue modificado o la firma no corresponde a este comprobante.</p>
+        {% endif %}
+      </div>
+    {% endif %}
+    <p class="small muted mt-4">
+      La verificación usa la clave pública de la plataforma.
+      <a class="link-action" href="{% url 'payments:public_key' %}">Descargar clave pública</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
