@@ -35,4 +35,5 @@ urlpatterns = [
     path('gestion/usuarios/'                , views.user_list         , name='manage_list'),
     path('gestion/usuarios/<int:pk>/activar/', views.user_toggle_active, name='manage_toggle'),
     path('gestion/usuarios/<int:pk>/rol/'    , views.user_change_role  , name='manage_role'),
+    path('gestion/usuarios/<int:pk>/revocar/' , views.user_revoke_session, name='manage_revoke'),
 ]
