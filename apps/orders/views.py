@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts               import get_object_or_404, redirect, render
 from django.views.decorators.http   import require_POST
 
+from apps.security_events.services  import Event, log_event
 from apps.services.permissions.roles import role_required
 from apps.users.models               import User
 from .forms    import OrderStatusForm
@@ -18,6 +19,7 @@ def checkout(request):
     except EmptyOrderError as exc:
         messages.error(request, str(exc))
         return redirect('cart:detail')
+    log_event(Event.ORDER_CREATED, request, details=f'Orden #{order.pk}, total ${order.total}')
     messages.success(request, f'Orden #{order.pk} creada. Procede con el pago.')
     return redirect('payments:pay', order_id=order.pk)
 

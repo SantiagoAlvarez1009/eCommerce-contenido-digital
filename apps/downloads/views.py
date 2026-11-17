@@ -8,6 +8,7 @@ from django.shortcuts               import get_object_or_404, redirect, render
 
 from apps.orders.services import purchased_products
 from apps.products.models import DigitalProduct
+from apps.security_events.services import Event, Result, log_event
 from .models   import Download
 from .services import NotPurchasedError, prepare_download
 
@@ -25,10 +26,15 @@ def library(request):
 def download_product(request, product_id):
     product = get_object_or_404(DigitalProduct, pk=product_id)
     try:
-        content, file_name, _fingerprint = prepare_download(request.user, product)
+        content, file_name, fingerprint, created = prepare_download(request.user, product)
     except NotPurchasedError:
+        log_event(Event.DOWNLOAD, request, result=Result.FAILURE, details=f'Producto no adquirido: {product.name}')
         messages.error(request, 'Solo puedes descargar productos que hayas adquirido.')
         return redirect('downloads:library')
+
+    if created:
+        log_event(Event.FINGERPRINT_CREATED, request, details=f'{fingerprint.fingerprint} en {product.name}, orden #{fingerprint.order_id}')
+    log_event(Event.DOWNLOAD, request, details=f'{product.name}, fingerprint {fingerprint.fingerprint}')
 
     return FileResponse(
         io.BytesIO(content),

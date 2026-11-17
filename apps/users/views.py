@@ -1,15 +1,24 @@
 from django.contrib                import messages
 from django.contrib.auth           import login
+from django.contrib.auth           import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.shortcuts              import get_object_or_404, redirect, render
 from django.views.decorators.http  import require_POST
 
 from apps.cart.models                 import Cart
+from apps.security_events.services    import Event, log_event
 from apps.services.permissions.roles  import role_required
 from .forms  import ProfileForm, RegisterForm, RoleForm
 from .models import User
 from django.contrib.sessions.models import Session
 from django.utils import timezone
+
+class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        log_event(Event.PASSWORD_RESET, self.request, user=form.user)
+        return response
+
 
 def register(request):
     if request.user.is_authenticated:
@@ -54,6 +63,11 @@ def user_toggle_active(request, pk):
         messages.error(request, 'No puedes desactivar tu propia cuenta.')
     else:
         user.set_enabled(not user.is_active)
+        log_event(
+            Event.ACCOUNT_ENABLED if user.is_active else Event.ACCOUNT_DISABLED,
+            request,
+            details = f'Cuenta: {user.email}'
+        )
         messages.success(request, f'Cuenta {"activada" if user.is_active else "desactivada"}: {user.email}.')
     return redirect('users:manage_list')
 
@@ -66,8 +80,10 @@ def user_change_role(request, pk):
     if user == request.user:
         messages.error(request, 'No puedes cambiar tu propio rol.')
     elif form.is_valid():
+        previous  = user.get_role_display()
         user.role = form.cleaned_data['role']
         user.save(update_fields=['role'])
+        log_event(Event.ROLE_CHANGED, request, details=f'{user.email}: {previous} a {user.get_role_display()}')
         messages.success(request, f'Rol de {user.email} actualizado a {user.get_role_display()}.')
     else:
         messages.error(request, 'Rol invalido.')
@@ -94,6 +110,7 @@ def user_revoke_session(request, pk):
                 sesion.delete()
                 sesiones_borradas += 1
                 
+        log_event(Event.SESSION_REVOKED, request, details=f'{user.email}: {sesiones_borradas} sesion(es)')
         messages.success(request, f'Se cerraron {sesiones_borradas} sesión(es) de {user.email}.')
         
     return redirect('users:manage_list')

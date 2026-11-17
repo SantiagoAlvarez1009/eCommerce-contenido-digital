@@ -5,6 +5,7 @@ from django.http                    import FileResponse, Http404, HttpResponse
 from django.shortcuts               import get_object_or_404, redirect, render
 
 from apps.orders.models import Order
+from apps.security_events.services import Event, log_event
 from apps.services.crypto import signing
 from .forms    import ReceiptVerificationForm, SimulatedPaymentForm
 from .models   import PaymentReceipt
@@ -27,6 +28,8 @@ def pay_order(request, order_id):
             return redirect('orders:detail', pk=order.pk)
 
         if payment.status == payment.Status.COMPLETED:
+            log_event(Event.PAYMENT_APPROVED, request, details=f'Orden #{order.pk}, referencia {payment.transaction_reference}')
+            log_event(Event.SIGNATURE_CREATED, request, details=f'Comprobante de la orden #{order.pk}')
             messages.success(request, f'Pago aprobado. Referencia {payment.transaction_reference}.')
             return redirect('orders:detail', pk=order.pk)
         messages.error(request, f'Pago rechazado. Referencia {payment.transaction_reference}. Puedes reintentar.')

@@ -37,6 +37,7 @@ DJANGO_APPS = [
     'apps.payments',
     'apps.cart',
     'apps.downloads',
+    'apps.security_events',
 ]
 
 THIRD_PARTY_APPS = [

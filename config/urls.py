@@ -15,6 +15,7 @@ urlpatterns = [
     path('ordenes/'   , include('apps.orders.urls')),
     path('pagos/'     , include('apps.payments.urls')),
     path('descargas/' , include('apps.downloads.urls')),
+    path('seguridad/eventos/', include('apps.security_events.urls')),
 ]
 
 # Local development only: serve uploaded media. In production it lives in S3.
