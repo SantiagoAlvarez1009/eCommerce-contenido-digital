@@ -7,7 +7,9 @@ from apps.services.permissions.roles import role_required
 from apps.users.models               import User
 from .forms    import OrderStatusForm
 from .models   import Order
-from .services import EmptyOrderError, cancel_order, create_order_from_cart
+from .services import (
+    EmptyOrderError, InvalidStatusTransition, cancel_order, change_order_status, create_order_from_cart
+)
 
 
 @login_required
@@ -70,10 +72,15 @@ def manage_detail(request, pk):
         Order.objects.select_related('user').prefetch_related('items__product', 'payments'),
         pk=pk
     )
-    form = OrderStatusForm(request.POST or None, initial={'status': order.status})
-    if request.method == 'POST' and form.is_valid():
-        order.status = form.cleaned_data['status']
-        order.save(update_fields=['status'])
-        messages.success(request, f'Estado de la orden #{order.pk} actualizado.')
+    form = OrderStatusForm(request.POST or None, order=order)
+    if request.method == 'POST':
+        if form.is_valid():
+            try:
+                change_order_status(order, form.cleaned_data['status'])
+                messages.success(request, f'Estado de la orden #{order.pk} actualizado.')
+            except InvalidStatusTransition as exc:
+                messages.error(request, str(exc))
+        else:
+            messages.error(request, 'Ese cambio de estado no está permitido para esta orden.')
         return redirect('orders:manage_detail', pk=order.pk)
     return render(request, 'orders/manage_detail.html', {'order': order, 'form': form})

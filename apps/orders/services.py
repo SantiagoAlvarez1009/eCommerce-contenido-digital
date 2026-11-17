@@ -9,6 +9,10 @@ class EmptyOrderError(Exception):
     """The cart has no products that can be purchased."""
 
 
+class InvalidStatusTransition(Exception):
+    pass
+
+
 def purchased_products(user):
     """Products the user owns: those in orders already paid (completed)."""
     return DigitalProduct.objects.filter(
@@ -59,5 +63,17 @@ def cancel_order(order):
     if order.is_paid:
         raise ValueError('Una orden pagada no puede cancelarse por el cliente.')
     order.status = Order.Status.CANCELLED
+    order.save(update_fields=['status'])
+    return order
+
+
+@transaction.atomic
+def change_order_status(order, new_status):
+    order = Order.objects.select_for_update().get(pk=order.pk)
+    if new_status not in order.allowed_transitions:
+        raise InvalidStatusTransition(
+            f'Una orden {order.get_status_display().lower()} no puede pasar a {Order.Status(new_status).label.lower()}.'
+        )
+    order.status = new_status
     order.save(update_fields=['status'])
     return order
