@@ -20,3 +20,5 @@ keys/
 *.key
 *_key.pem
 !claves_publicas/*.pub.pem
+
+certificados_tls/
