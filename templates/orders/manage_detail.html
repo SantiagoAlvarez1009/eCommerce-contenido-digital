@@ -29,11 +29,17 @@
 
   <div class="col-lg-4">
     <div class="summary">
-      <p class="eyebrow mb-4">Estado del pedido</p>
-      <form method="post">{% csrf_token %}
-        {% include 'partials/form.html' %}
-        <button type="submit" class="btn btn-dark w-100">Actualizar estado</button>
-      </form>
+      <p class="eyebrow mb-2">Estado del pedido</p>
+      <p class="mb-4"><span class="status status-{{ order.status }}">{{ order.get_status_display }}</span></p>
+      {% if order.is_final %}
+        <p class="small muted mb-0">Esta orden está en un estado final y ya no se puede modificar.</p>
+      {% else %}
+        <form method="post">{% csrf_token %}
+          {% include 'partials/form.html' %}
+          <button type="submit" class="btn btn-dark w-100">Actualizar estado</button>
+        </form>
+        <p class="small muted mt-3 mb-0">Una orden solo se completa al aprobarse su pago.</p>
+      {% endif %}
     </div>
   </div>
 </div>
