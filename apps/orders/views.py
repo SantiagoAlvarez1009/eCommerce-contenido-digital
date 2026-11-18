@@ -78,7 +78,13 @@ def manage_detail(request, pk):
     if request.method == 'POST':
         if form.is_valid():
             try:
-                change_order_status(order, form.cleaned_data['status'])
+                previous = order.get_status_display()
+                updated  = change_order_status(order, form.cleaned_data['status'])
+                log_event(
+                    Event.ORDER_STATUS_CHANGED,
+                    request,
+                    details = f'Orden #{order.pk}: {previous} a {updated.get_status_display()}'
+                )
                 messages.success(request, f'Estado de la orden #{order.pk} actualizado.')
             except InvalidStatusTransition as exc:
                 messages.error(request, str(exc))

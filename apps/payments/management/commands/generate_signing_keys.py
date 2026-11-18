@@ -6,6 +6,8 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
+from apps.services.crypto.signing import key_password
+
 
 class Command(BaseCommand):
     help = 'Genera el par de claves Ed25519 para firmar comprobantes.'
@@ -20,11 +22,14 @@ class Command(BaseCommand):
         if private_path.exists() and not options['force']:
             raise CommandError(f'Ya existe {private_path}. Usa --force para reemplazarla.')
 
+        password   = key_password()
+        encryption = serialization.BestAvailableEncryption(password) if password else serialization.NoEncryption()
+
         key = Ed25519PrivateKey.generate()
         private_pem = key.private_bytes(
             encoding             = serialization.Encoding.PEM,
             format               = serialization.PrivateFormat.PKCS8,
-            encryption_algorithm = serialization.NoEncryption(),
+            encryption_algorithm = encryption,
         )
         public_pem = key.public_key().public_bytes(
             encoding = serialization.Encoding.PEM,
@@ -39,5 +44,6 @@ class Command(BaseCommand):
             f.write(private_pem)
         public_path.write_bytes(public_pem)
 
-        self.stdout.write(self.style.SUCCESS(f'Clave privada: {private_path} (permisos 600)'))
+        protection = 'cifrada con SIGNING_KEY_PASSWORD' if password else 'SIN cifrar: define SIGNING_KEY_PASSWORD para protegerla'
+        self.stdout.write(self.style.SUCCESS(f'Clave privada: {private_path} (permisos 600, {protection})'))
         self.stdout.write(self.style.SUCCESS(f'Clave publica: {public_path}'))

@@ -146,6 +146,9 @@ MAILERS = {
 
 SIGNING_PRIVATE_KEY_PATH = env('SIGNING_PRIVATE_KEY_PATH', default=str(BASE_DIR / 'keys' / 'signing_key.pem'))
 SIGNING_PUBLIC_KEY_PATH  = env('SIGNING_PUBLIC_KEY_PATH',  default=str(BASE_DIR / 'claves_publicas' / 'signing_key.pub.pem'))
+SIGNING_KEY_PASSWORD     = env('SIGNING_KEY_PASSWORD', default='')
+
+SECURITY_EVENTS_TRUST_X_REAL_IP = env.bool('SECURITY_EVENTS_TRUST_X_REAL_IP', default=False)
 
 
 TEST_RUNNER = 'apps.services.crypto.test_runner.SigningKeysTestRunner'
