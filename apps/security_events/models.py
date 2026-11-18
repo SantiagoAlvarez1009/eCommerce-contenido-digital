@@ -9,6 +9,7 @@ class SecurityEvent(models.Model):
         LOGOUT              = 'LOGOUT'             , 'Cierre de sesión'
         PASSWORD_RESET      = 'PASSWORD_RESET'     , 'Restablecimiento de contraseña'
         ORDER_CREATED       = 'ORDER_CREATED'      , 'Orden creada'
+        ORDER_STATUS_CHANGED = 'ORDER_STATUS_CHANGED', 'Cambio de estado de orden'
         PAYMENT_APPROVED    = 'PAYMENT_APPROVED'   , 'Pago aprobado'
         DOWNLOAD            = 'DOWNLOAD'           , 'Descarga'
         ROLE_CHANGED        = 'ROLE_CHANGED'       , 'Cambio de rol'

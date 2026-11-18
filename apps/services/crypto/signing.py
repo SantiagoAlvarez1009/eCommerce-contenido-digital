@@ -18,8 +18,20 @@ def _read_key_file(path):
     return path.read_bytes()
 
 
+def key_password():
+    password = getattr(settings, 'SIGNING_KEY_PASSWORD', '')
+    return password.encode('utf-8') if password else None
+
+
 def load_private_key():
-    key = serialization.load_pem_private_key(_read_key_file(settings.SIGNING_PRIVATE_KEY_PATH), password=None)
+    try:
+        key = serialization.load_pem_private_key(
+            _read_key_file(settings.SIGNING_PRIVATE_KEY_PATH), password=key_password()
+        )
+    except (TypeError, ValueError) as exc:
+        raise SigningKeyError(
+            'No se pudo abrir la clave privada: revisa SIGNING_KEY_PASSWORD en el archivo .env.'
+        ) from exc
     if not isinstance(key, Ed25519PrivateKey):
         raise SigningKeyError('La clave privada no es Ed25519.')
     return key

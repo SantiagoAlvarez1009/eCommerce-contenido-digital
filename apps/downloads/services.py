@@ -12,6 +12,10 @@ class NotPurchasedError(Exception):
     """The user has not acquired the product."""
 
 
+class TamperedProductError(Exception):
+    pass
+
+
 def new_fingerprint_value():
     return f'FP-{secrets.token_hex(12).upper()}'
 
@@ -39,6 +43,9 @@ def prepare_download(user, product):
     order = purchase_order_for(user, product)
     if order is None:
         raise NotPurchasedError('El producto no ha sido adquirido por este usuario.')
+
+    if not product.file_is_intact():
+        raise TamperedProductError('El archivo del producto no coincide con su hash registrado.')
 
     fp, created = get_or_create_fingerprint(user, order, product)
     with product.file_path.open('rb') as f:

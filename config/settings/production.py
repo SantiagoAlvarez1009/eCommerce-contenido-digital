@@ -10,6 +10,8 @@ from .base import DATABASES, env
 
 DEBUG = False
 
+SECURITY_EVENTS_TRUST_X_REAL_IP = env.bool('SECURITY_EVENTS_TRUST_X_REAL_IP', default=True)
+
 # RDS Database
 
 DATABASES['default']['CONN_MAX_AGE'] = env.int('DB_CONN_MAX_AGE', default=60)

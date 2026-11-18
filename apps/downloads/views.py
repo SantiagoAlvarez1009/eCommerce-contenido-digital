@@ -10,7 +10,7 @@ from apps.orders.services import purchased_products
 from apps.products.models import DigitalProduct
 from apps.security_events.services import Event, Result, log_event
 from .models   import Download
-from .services import NotPurchasedError, prepare_download
+from .services import NotPurchasedError, TamperedProductError, prepare_download
 
 
 @login_required
@@ -30,6 +30,10 @@ def download_product(request, product_id):
     except NotPurchasedError:
         log_event(Event.DOWNLOAD, request, result=Result.FAILURE, details=f'Producto no adquirido: {product.name}')
         messages.error(request, 'Solo puedes descargar productos que hayas adquirido.')
+        return redirect('downloads:library')
+    except TamperedProductError:
+        log_event(Event.DOWNLOAD, request, result=Result.FAILURE, details=f'Integridad fallida, hash distinto: {product.name}')
+        messages.error(request, 'El archivo no pasó la verificación de integridad. Contacta al soporte.')
         return redirect('downloads:library')
 
     if created:
