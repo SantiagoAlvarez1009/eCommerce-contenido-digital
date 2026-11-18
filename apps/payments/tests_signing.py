@@ -39,3 +39,38 @@ class SigningTests(TestCase):
 
     def test_invalid_signature_text_is_rejected(self):
         self.assertFalse(signing.verify(RECEIPT, 'esto-no-es-base64!!'))
+
+class EncryptedKeyTests(TestCase):
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp())
+        self.paths = dict(
+            SIGNING_PRIVATE_KEY_PATH = self.tmp / 'private' / 'signing_key.pem',
+            SIGNING_PUBLIC_KEY_PATH  = self.tmp / 'public' / 'signing_key.pub.pem',
+        )
+
+    def generate(self, password):
+        with override_settings(SIGNING_KEY_PASSWORD=password, **self.paths):
+            call_command('generate_signing_keys', '--force', stdout=io.StringIO())
+
+    def test_private_key_is_encrypted_when_password_is_set(self):
+        self.generate('una-contrasena-larga')
+        content = self.paths['SIGNING_PRIVATE_KEY_PATH'].read_bytes()
+        self.assertIn(b'ENCRYPTED PRIVATE KEY', content)
+
+    def test_encrypted_key_signs_and_verifies_with_password(self):
+        self.generate('una-contrasena-larga')
+        with override_settings(SIGNING_KEY_PASSWORD='una-contrasena-larga', **self.paths):
+            signature = signing.sign(RECEIPT)
+            self.assertTrue(signing.verify(RECEIPT, signature))
+
+    def test_encrypted_key_cannot_be_used_with_wrong_password(self):
+        self.generate('una-contrasena-larga')
+        with override_settings(SIGNING_KEY_PASSWORD='otra-contrasena', **self.paths):
+            with self.assertRaises(signing.SigningKeyError):
+                signing.sign(RECEIPT)
+
+    def test_encrypted_key_cannot_be_used_without_password(self):
+        self.generate('una-contrasena-larga')
+        with override_settings(SIGNING_KEY_PASSWORD='', **self.paths):
+            with self.assertRaises(signing.SigningKeyError):
+                signing.sign(RECEIPT)
