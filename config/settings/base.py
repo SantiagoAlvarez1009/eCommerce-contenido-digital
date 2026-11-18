@@ -152,3 +152,9 @@ SECURITY_EVENTS_TRUST_X_REAL_IP = env.bool('SECURITY_EVENTS_TRUST_X_REAL_IP', de
 
 
 TEST_RUNNER = 'apps.services.crypto.test_runner.SigningKeysTestRunner'
+
+# Configuración de seguridad y expiración de sesiones
+SESSION_COOKIE_AGE = 1800  
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True 
+SESSION_COOKIE_HTTPONLY = True  
