@@ -25,6 +25,7 @@ AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default='us-east-1')
 AWS_DEFAULT_ACL = None  # Bucket with ACLs disabled
 AWS_S3_FILE_OVERWRITE = False
 AWS_QUERYSTRING_EXPIRE = 3600  # Signed URLs for media (1 h)
+AWS_S3_SIGNATURE_VERSION = 's3v4'
 
 STORAGES = {
     # Private media files served with signed URLs
@@ -32,17 +33,15 @@ STORAGES = {
         'BACKEND': 'storages.backends.s3.S3Storage',
         'OPTIONS': {'location': 'media'},
     },
-    # Static: collectstatic uploads to S3
+    # Static: collectstatic writes to disk, nginx serves /static/
     'staticfiles': {
-        'BACKEND': 'storages.backends.s3.S3StaticStorage',
-        'OPTIONS': {'location': 'static'},
+        'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
     },
 }
 
 _s3_domain = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com'
-STATIC_URL = f'https://{_s3_domain}/static/'
+STATIC_URL = '/static/'
 MEDIA_URL = f'https://{_s3_domain}/media/'
-
 
 # Email (SMTP, p. eg. Amazon SES)
 
