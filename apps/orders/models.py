@@ -9,6 +9,13 @@ class Order(models.Model):
         COMPLETED  = 'completado' , 'Completado'
         CANCELLED  = 'cancelado'  , 'Cancelado'
 
+    TRANSITIONS = {
+        Status.PENDING   : (Status.PROCESSING, Status.CANCELLED),
+        Status.PROCESSING: (Status.PENDING, Status.CANCELLED),
+        Status.COMPLETED : (),
+        Status.CANCELLED : (),
+    }
+
     user = models.ForeignKey(
         'users.User',
         on_delete    = models.CASCADE,
@@ -42,6 +49,14 @@ class Order(models.Model):
     @property
     def is_paid(self):
         return self.status == self.Status.COMPLETED
+
+    @property
+    def allowed_transitions(self):
+        return self.TRANSITIONS.get(self.status, ())
+
+    @property
+    def is_final(self):
+        return not self.allowed_transitions
 
     @property
     def can_be_paid(self):
