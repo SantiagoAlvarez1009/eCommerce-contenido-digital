@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Eventos de seguridad{% endblock %}
+{% block content %}
+<p class="eyebrow mb-2">Administración</p>
+<h1 class="display-6 mb-5">Eventos de seguridad</h1>
+
+<form method="get" class="d-flex flex-wrap align-items-end gap-4 mb-5">
+  <div>
+    <label class="eyebrow d-block mb-1" for="evento">Evento</label>
+    <select name="evento" id="evento" class="form-line auto">
+      <option value="">Todos</option>
+      {% for value, label in events %}<option value="{{ value }}" {% if value == current.evento %}selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+  </div>
+  <div>
+    <label class="eyebrow d-block mb-1" for="resultado">Resultado</label>
+    <select name="resultado" id="resultado" class="form-line auto">
+      <option value="">Todos</option>
+      {% for value, label in results %}<option value="{{ value }}" {% if value == current.resultado %}selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+  </div>
+  <div>
+    <label class="eyebrow d-block mb-1" for="correo">Correo</label>
+    <input type="text" name="correo" id="correo" class="form-line" value="{{ current.correo }}" maxlength="254">
+  </div>
+  <button type="submit" class="btn btn-dark">Filtrar</button>
+</form>
+
+<div class="table-responsive">
+  <table class="table align-middle">
+    <thead>
+      <tr><th>Fecha</th><th>Evento</th><th>Resultado</th><th>Usuario</th><th>Origen</th><th>Detalle</th></tr>
+    </thead>
+    <tbody>
+      {% for e in page %}
+      <tr>
+        <td class="muted">{{ e.created_at|date:"d/m/Y H:i:s" }}</td>
+        <td>{{ e.get_event_display }}</td>
+        <td>{{ e.get_result_display }}</td>
+        <td>{{ e.email|default:"—" }}</td>
+        <td class="muted">{{ e.origin|default:"—" }}</td>
+        <td class="small">{{ e.details }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="muted py-5 text-center">No hay eventos registrados.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if page.has_other_pages %}
+<nav class="d-flex gap-4 mt-4">
+  {% if page.has_previous %}<a class="link-action" href="?evento={{ current.evento }}&resultado={{ current.resultado }}&correo={{ current.correo|urlencode }}&pagina={{ page.previous_page_number }}">Anterior</a>{% endif %}
+  <span class="muted">Página {{ page.number }} de {{ page.paginator.num_pages }}</span>
+  {% if page.has_next %}<a class="link-action" href="?evento={{ current.evento }}&resultado={{ current.resultado }}&correo={{ current.correo|urlencode }}&pagina={{ page.next_page_number }}">Siguiente</a>{% endif %}
+</nav>
+{% endif %}
+{% endblock %}
