@@ -16,6 +16,9 @@ class TamperedProductError(Exception):
     pass
 
 
+FingerprintError = fingerprinting.FingerprintError
+
+
 def new_fingerprint_value():
     return f'FP-{secrets.token_hex(12).upper()}'
 
@@ -39,6 +42,8 @@ def prepare_download(user, product):
     """
     Build the personalized copy of a product for a user who has bought it.
     Returns (content_bytes, file_name, fingerprint, fingerprint_created).
+    Raises FingerprintError if the copy cannot be marked; the transaction is
+    rolled back, so no FingerPrint or Download record is kept for it.
     """
     order = purchase_order_for(user, product)
     if order is None:
