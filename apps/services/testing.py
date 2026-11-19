@@ -1,6 +1,7 @@
 """
 Helpers for the test suite
 """
+import io
 import shutil
 import tempfile
 
@@ -38,6 +39,39 @@ def make_product(name='Manual', price='10.00', content=b'contenido original', st
     product.file_path.save(file_name or f'{name.lower().replace(" ", "_")}.txt', ContentFile(content), save=False)
     product.save()
     return product
+
+
+def pdf_bytes(text='Contenido original del manual', pages=1):
+    """Small valid PDF with visible text on each page (built with pypdf)."""
+    from pypdf         import PdfWriter
+    from pypdf.generic import ContentStream, DictionaryObject, NameObject
+
+    writer = PdfWriter()
+    font   = writer._add_object(DictionaryObject({
+        NameObject('/Type')    : NameObject('/Font'),
+        NameObject('/Subtype') : NameObject('/Type1'),
+        NameObject('/BaseFont'): NameObject('/Helvetica'),
+    }))
+    for number in range(1, pages + 1):
+        page = writer.add_blank_page(612, 792)
+        page[NameObject('/Resources')] = DictionaryObject({
+            NameObject('/Font'): DictionaryObject({NameObject('/F1'): font}),
+        })
+        contents = ContentStream(None, writer)
+        contents.set_data(f'BT /F1 14 Tf 72 720 Td ({text} - pagina {number}) Tj ET'.encode('ascii'))
+        page.replace_contents(contents)
+    output = io.BytesIO()
+    writer.write(output)
+    return output.getvalue()
+
+
+def png_bytes(size=(64, 64), mode='RGB', color=(200, 120, 40)):
+    """Small valid PNG image."""
+    from PIL import Image
+
+    output = io.BytesIO()
+    Image.new(mode, size, color if mode != 'P' else 0).save(output, format='PNG')
+    return output.getvalue()
 
 
 def buy(client, products, approve=True):
