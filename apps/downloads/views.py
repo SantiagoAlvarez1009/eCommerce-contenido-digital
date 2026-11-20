@@ -10,7 +10,7 @@ from apps.orders.services import purchased_products
 from apps.products.models import DigitalProduct
 from apps.security_events.services import Event, Result, log_event
 from .models   import Download
-from .services import NotPurchasedError, TamperedProductError, prepare_download
+from .services import FingerprintError, NotPurchasedError, TamperedProductError, prepare_download
 
 
 @login_required
@@ -34,6 +34,10 @@ def download_product(request, product_id):
     except TamperedProductError:
         log_event(Event.DOWNLOAD, request, result=Result.FAILURE, details=f'Integridad fallida, hash distinto: {product.name}')
         messages.error(request, 'El archivo no pasó la verificación de integridad. Contacta al soporte.')
+        return redirect('downloads:library')
+    except FingerprintError:
+        log_event(Event.DOWNLOAD, request, result=Result.FAILURE, details=f'No se pudo generar la copia con fingerprint: {product.name}')
+        messages.error(request, 'No se pudo generar tu copia personalizada. Contacta al soporte.')
         return redirect('downloads:library')
 
     if created:
