@@ -1,0 +1,4 @@
+Manual de Redes Seguras
+
+Capitulo 1. Fundamentos de TLS
+Este archivo es el producto original, tal como lo subio el operador.

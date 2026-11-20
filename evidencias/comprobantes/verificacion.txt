@@ -1,0 +1,14 @@
+# Verificacion de comprobantes (pagina /pagos/comprobantes/verificar/, firma Ed25519)
+# Python   : 3.13.7 | Django 6.1.2 | Windows
+##############################################################################
+
+Comprobante : comprobante_orden_1.txt
+Firma       : comprobante_orden_1.sig
+Clave       : clave_publica_comprobantes.pem (clave temporal generada para esta evidencia)
+
+1. Comprobante original                 -> FIRMA VALIDA
+2. Comprobante modificado (total $1.00) -> FIRMA INVALIDA
+
+Diferencia entre el original y el modificado:
+   original  : Total        : $298.00
+   modificado: Total        : $1.00
