@@ -1,0 +1,10 @@
+# Producto alterado ("Manual de Redes Seguras": se agrego una linea al archivo en el almacenamiento)
+# Python   : 3.13.7 | Django 6.1.2 | Windows
+# Comando  : python manage.py verify_product_hashes
+##############################################################################
+
+ALTERADO  Manual de Redes Seguras
+          registrado: 70c0ac93a22eb59a06ca350033816a8cfafe331d464daa5fbebe3f702f4acc7f
+          actual    : 34cdf98d30b68ff12944decc98503a1e6477e30dc35178a7e10fe63416af1adf
+OK        Guia de Criptografia
+CommandError: 1 producto(s) con integridad fallida.

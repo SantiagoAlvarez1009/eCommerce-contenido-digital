@@ -1,0 +1,39 @@
+# Identificacion de copias con identify_copy
+# Python   : 3.13.7 | Django 6.1.2 | Windows
+# Comando  : python manage.py identify_copy <archivo>
+##############################################################################
+
+=== manual_original.txt (archivo sin fingerprint)
+No se encontro ningun fingerprint reconocido.
+
+=== manual_copia_pattinson.txt (descargada por pattinson@demo.test, orden 1)
+Fingerprint: FP-9573CCAAEFF7E81603513D64
+Usuario : pattinson@demo.test (id 1)
+Orden   : 1
+Producto: Manual de Redes Seguras (id 1)
+Creado  : 2026-11-20 05:15:52
+
+=== manual_copia_craig.txt (descargada por craig@demo.test, orden 2)
+Fingerprint: FP-0A2D4423EE57D6B12B4C047B
+Usuario : craig@demo.test (id 2)
+Orden   : 2
+Producto: Manual de Redes Seguras (id 1)
+Creado  : 2026-11-20 05:15:52
+
+=== guia_original.pdf (archivo sin fingerprint)
+No se encontro ningun fingerprint reconocido.
+
+=== guia_copia_pattinson.pdf (descargada por pattinson@demo.test, orden 1)
+Fingerprint: FP-E610A7D458B23893729FB814
+Usuario : pattinson@demo.test (id 1)
+Orden   : 1
+Producto: Guia de Criptografia (id 2)
+Creado  : 2026-11-20 05:15:52
+
+=== guia_copia_craig.pdf (descargada por craig@demo.test, orden 2)
+Fingerprint: FP-BBC084DE6B356382880B93B5
+Usuario : craig@demo.test (id 2)
+Orden   : 2
+Producto: Guia de Criptografia (id 2)
+Creado  : 2026-11-20 05:15:52
+

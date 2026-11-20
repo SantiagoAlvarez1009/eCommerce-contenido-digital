@@ -1,0 +1,8 @@
+# Productos intactos
+# Python   : 3.13.7 | Django 6.1.2 | Windows
+# Comando  : python manage.py verify_product_hashes
+##############################################################################
+
+OK        Manual de Redes Seguras
+OK        Guia de Criptografia
+Todos los productos coinciden con su hash.

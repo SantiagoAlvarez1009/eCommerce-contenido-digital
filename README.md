@@ -1,5 +1,14 @@
 # eCommerce-contenido-digital
 
+[Documentación Oficial
+](https://docs.google.com/document/d/1b1GL19RG9cJhvf6n_V-1pHYbFKFg19lM/edit?usp=sharing&ouid=108166591159190535576&rtpof=true&sd=true)
+
+**Equipo:**
+- Adan Oswaldo Fraire Lopez | 202765
+- Berenice Flores Hernández |  215861
+- Anna Lizbeth Barajas Sandoval  |  222835 
+- Santiago Mendivil Alvarez | 226129
+
 ## Desarrollo local
 
 ```powershell

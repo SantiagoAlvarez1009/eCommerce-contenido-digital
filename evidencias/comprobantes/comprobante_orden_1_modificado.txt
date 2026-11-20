@@ -1,0 +1,12 @@
+COMPROBANTE DE COMPRA
+=====================
+Orden        : 1
+Usuario      : pattinson@demo.test
+Fecha        : 2026-11-20 05:15:52 UTC
+Referencia   : SIM-81C18C56DA04
+
+Productos:
+  - Manual de Redes Seguras  $149.00
+  - Guia de Criptografia  $149.00
+
+Total        : $1.00
